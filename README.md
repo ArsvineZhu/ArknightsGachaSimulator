@@ -1,0 +1,2 @@
+# ArknightsGechaSimulator
+Arknights Gecha Simulator
