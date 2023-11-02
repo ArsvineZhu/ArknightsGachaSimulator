@@ -1,3 +1,4 @@
+#! python3.12
 from random import random
 from dataclasses import dataclass
 # from typing import ...
@@ -21,6 +22,8 @@ class Simulator:
     def __init__(self, path: str) -> None:
         self.path = path
         self.box = self.load_box(path)
+
+        self.update update = 0.02
 
         self.ranks = {i: StarRank(self.analyze(
             self.box[f"{i}"])) for i in range(6, 2, -1)}
@@ -144,7 +147,7 @@ class Simulator:
 
         return ret
 
-    def gecha(self):
+    def gacha(self):
         # print(f"{self.six_rate}$", end="")
         self.results.total += 1
         operators = []
@@ -178,7 +181,7 @@ class Simulator:
                 else:
                     self.results.distance += 1
                     if self.results.distance > 50:
-                        self.six_rate += 0.02
+                        self.six_rate += self.uprate
                         factor = (1 - self.six_rate) / (1 - self.rates[6])
                         self.five_rate = factor * self.rates[5]
                         self.four_rate = factor * self.rates[4]
@@ -187,11 +190,10 @@ class Simulator:
                             self.ranks[i] = self.calc(i, self.ranks[i])
                 break
 
-        del operators, star, rates
 
-    def gecha10(self):
+    def gacha10(self):
         for i in range(10):
-            self.gecha()
+            self.gacha()
 
 
 def main() -> None:
@@ -199,7 +201,7 @@ def main() -> None:
     s = Simulator(r"box.json")
     for i in range(200):
         print(i + 1, end=": ")
-        s.gecha()
+        s.gacha()
     # pp.pprint(s.results.operators)
     # print(len(s.results.star))
     print("\nSimulation accomplished")
