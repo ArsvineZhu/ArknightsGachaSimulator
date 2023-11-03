@@ -23,7 +23,7 @@ class Simulator:
         self.path = path
         self.box = self.load_box(path)
 
-        self.update update = 0.02
+        self.uprate = 0.02
 
         self.ranks = {i: StarRank(self.analyze(
             self.box[f"{i}"])) for i in range(6, 2, -1)}
@@ -198,7 +198,7 @@ class Simulator:
 
 def main() -> None:
     print("Simulation start...\n")
-    s = Simulator(r"box.json")
+    s = Simulator(r"ArknightsGachaSimulator\box.json")
     for i in range(200):
         print(i + 1, end=": ")
         s.gacha()
