@@ -198,7 +198,7 @@ class Simulator:
 
 def main() -> None:
     print("Simulation start...\n")
-    s = Simulator(r"ArknightsGachaSimulator\box.json")
+    s = Simulator("box.json")
     for i in range(200):
         print(i + 1, end=": ")
         s.gacha()
