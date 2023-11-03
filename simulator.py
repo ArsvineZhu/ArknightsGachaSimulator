@@ -163,7 +163,7 @@ class Simulator:
         v = random()
         # print(round(sum(rates), 3), end=" $ ")
         if v > sum(rates):
-            self.gecha()
+            self.gacha()
             return
         for i in range(operators.__len__()):
             if v <= sum(rates[:i]):
