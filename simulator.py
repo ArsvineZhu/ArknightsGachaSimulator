@@ -2,7 +2,7 @@
 from random import random
 from dataclasses import dataclass
 # from typing import ...
-import json
+from json import loads
 import pprint as pp
 
 
@@ -56,6 +56,7 @@ class Simulator:
             distance = 0
             operators = []
             star = []
+            stats = {3: 0, 4: 0, 5: 0, 6: 0}
 
         self.results = Results()
 
@@ -64,7 +65,7 @@ class Simulator:
 
         res = {}
         with open(path, encoding="utf-8") as f:
-            res = json.loads(f.read())
+            res = loads(f.read())
         return res
 
     def analyze(self, rank: dict) -> list:
@@ -143,16 +144,17 @@ class Simulator:
                         ret.box[i] = (ret.box[i][0], retro_rate, ret.box[i][2])
 
             case _:
-                raise Exception(f"Undefined star rank {rank}.")
+                raise Exception(f"Undefined star rank: {rank}.")
 
         return ret
 
-    def gacha(self):
+    def gacha(self) -> str:
         # print(f"{self.six_rate}$", end="")
         self.results.total += 1
         operators = []
         star = {}
         rates = []
+        optr = ""
 
         for j in range(3, 6 + 1):
             for i in sorted(self.ranks[j].box, key=lambda t: t[1], reverse=True):
@@ -163,13 +165,17 @@ class Simulator:
         v = random()
         # print(round(sum(rates), 3), end=" $ ")
         if v > sum(rates):
-            self.gacha()
-            return
+            return self.gacha()
+
+        _sum = 0
         for i in range(operators.__len__()):
-            if v <= sum(rates[:i]):
-                print(operators[i])
+            _sum += rates[i]
+            if v <= _sum:
+                optr = operators[i]
                 self.results.operators.append(operators[i])
                 self.results.star.append((operators[i], star[operators[i]]))
+                self.results.stats[star[operators[i]]] += 1
+
                 if star[operators[i]] == 6:
                     self.results.distance = 0
                     self.six_rate = self.rates[6]
@@ -189,21 +195,22 @@ class Simulator:
                         for i in range(3, 6 + 1):
                             self.ranks[i] = self.calc(i, self.ranks[i])
                 break
+        return optr
 
-
-    def gacha10(self):
+    def gacha10(self) -> list[str]:
+        optrs = []
         for i in range(10):
-            self.gacha()
+            optrs.append(self.gacha())
+        return optrs
 
 
 def main() -> None:
     print("Simulation start...\n")
     s = Simulator("box.json")
-    for i in range(200):
-        print(i + 1, end=": ")
-        s.gacha()
+    for i in range(100000):
+        print(i + 1, s.gacha())
     # pp.pprint(s.results.operators)
-    # print(len(s.results.star))
+    print(s.results.stats)
     print("\nSimulation accomplished")
 
 
